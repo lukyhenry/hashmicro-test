@@ -1,0 +1,79 @@
+---
+
+# This should possibly be a module that just check whether python 2.7 is there before doing anything
+
+- name : install build-essential
+  apt:
+    name: build-essential
+
+- name: Download Python27 source
+  get_url: url=http://python.org/ftp/python/2.7.6/Python-2.7.6.tgz dest=/tmp/Python-2.7.6.tgz owner=root group=root force=no
+  become: true
+
+- name: Extract Python27 source
+  command: /bin/tar -xzf /tmp/Python-2.7.6.tgz chdir=/usr/local/src creates=/usr/local/src/Python-2.7.6/configure
+  become: true
+
+- name: Make and *ALT* install Python27
+  shell: ./configure --prefix=/usr/local --enable-shared && /usr/bin/make && /usr/bin/make altinstall chdir=/usr/local/src/Python-2.7.6/ creates=/usr/local/bin/python2.7
+  become: true
+
+- name: easy_install
+  apt:
+    name: python-setuptools
+    state: present
+  become: true
+
+- name: pip + virtualenv
+  easy_install:
+    name: "{{ item }}"
+  with_items:
+    - "pip"
+ #  - "virtualenv"
+  become: true
+
+- name: install virtualenv
+  pip:
+    name: virtualenv
+
+- name: Symlink python27
+  file: src=/usr/local/bin/python2.7 dest=/usr/local/bin/python27 state=link
+  become: true
+
+- name: Add Odoo Apt signing key
+  apt_key:
+    url: https://nightly.odoo.com/odoo.key
+    state: present
+  become: true
+  become_user: root
+
+- name: Add repo to APT source
+  apt_repository:
+    repo: deb http://nightly.odoo.com/10.0/nightly/deb/ ./
+    state: present
+    filename: odoo
+  become: true
+  become_user: root
+
+- name: Update APT package & Install Odoo
+  apt:
+    name: odoo
+    state: present
+    update_cache: yes
+    force_apt_get: yes
+  become: true
+  become_user: root
+
+- name: Check that the odoo.conf exists
+  stat:
+    path: /etc/odoo/odoo.conf
+  register: stat_result
+  notify:
+  - Restart odoo
+
+- name: Install postgresql
+  apt:
+    name: postgresql
+    state: present
+  become: true
+  become_user: root

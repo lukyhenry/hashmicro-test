@@ -1,0 +1,3 @@
+[odoo]
+34.101.253.23 ansible_user=lukyah_official ansible_ssh_private_key_file=/home/luky/.ssh/instance-2_privatekey
+#ansible_python_interpreter=/usr/bin/python

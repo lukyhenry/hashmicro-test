@@ -1,0 +1,16 @@
+python-imaging
+python-ldap
+python-libxslt1
+python-openid
+python-psycopg2
+python-pychart
+python-pydot
+python-pypdf
+python-reportlab
+python-requests
+python-suds
+python-vatnumber
+python-vobject
+python-werkzeug
+python-xlsxwriter
+python-xlwt
