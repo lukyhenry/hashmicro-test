@@ -4,3 +4,13 @@
   become: true
   roles:
     - hashmicro-sys
+
+- hosts: postgresql
+  become: true
+  roles:
+    - postgresql
+
+- hosts: haproxy
+  become: true
+  roles:
+    - haproxy

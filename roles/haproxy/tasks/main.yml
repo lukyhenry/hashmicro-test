@@ -29,7 +29,7 @@
     name: "{{ item }}"
   with_items:
     - "pip"
- #  - "virtualenv"
+  #  - "virtualenv"
   become: true
 
 - name: install virtualenv
@@ -40,53 +40,17 @@
   file: src=/usr/local/bin/python2.7 dest=/usr/local/bin/python27 state=link
   become: true
 
-  #- name: Install npm
-  #apt:
-  #  name: npm
-
-  #- name: Install less
-  #npm:
-  #  name: less
-  #  global: yes
-
-- name: Add Odoo Apt signing key
-  apt_key:
-    url: https://nightly.odoo.com/odoo.key
-    state: present
-  become: true
-  become_user: root
-
-- name: Add repo to APT source
-  apt_repository:
-    repo: deb http://nightly.odoo.com/10.0/nightly/deb/ ./
-    state: present
-    filename: odoo
-  become: true
-  become_user: root
-
-- name: Update APT package & Install Odoo
+- name: Install haproxy
   apt:
-    name: odoo
+    name: haproxy
     state: present
-    update_cache: yes
-    force_apt_get: yes
   become: true
   become_user: root
 
 - name : Update haproxy config
   template:
-    src: "templates/odoo.conf"
-    dest: "/etc/odoo/odoo.conf"
-    backup: yes
+     src: "templates/haproxy.cfg"
+     dest: "/etc/haproxy/haproxy.cfg"
+     backup: yes
   notify:
-    - restart odoo
-
-- name: Check that the odoo.conf exists
-  stat:
-    path: /etc/odoo/odoo.conf
-  register: stat_result
-
-- name: Stop Postgresql Service
-  service:
-    name: postgresql
-    state: stopped
+    - restart haproxy
