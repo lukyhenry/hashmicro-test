@@ -5,6 +5,8 @@ Prerequisites
 -------------
 * It requires to configure ansible hosts and ssh keys to connect to instaces 
 * Config file can be configured either in `/etc/ansible/hosts` or creating new inventory file
+* Install community.general module :  
+`ansible-galaxy collection install community.general`
 
 Run playbook, run with this command :
 -------------------------------------
